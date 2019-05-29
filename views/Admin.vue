@@ -31,7 +31,7 @@
                </div>
         <!-- DESCRIPTION INPUT ---------------------- -->       
               <div class="inputs">
-                  <el-input   v-model="form.desc"  type="textarea" maxlength="40" rows="5" 
+                  <el-input   v-model="form.desc"  type="textarea" maxlength="400" rows="5" 
                                show-word-limit placeholder="Few Lines About your fitness Goal " ></el-input>
               </div > 
         <!-- AGE INPUT ---------------------- -->      
@@ -92,9 +92,11 @@ export default{
          name:"",
          contact:"",
          desc:"",
-         
+         image_url:"",
          money:"",
-         age:""
+         age:"",
+         image_uploaded : false,
+         timestamp: "",
         },
       
         }
@@ -116,13 +118,14 @@ export default{
          //// upload file
          const task = storageRef.put(tempthis.file).then((snapshot)=>{
              console.log(snapshot.state)
-
+         //// logic for getting file link 
             if(snapshot.state == "success"){
               storageRef.getDownloadURL().then(function(url){
 
-                tempthis.main_image = url
+                tempthis.image_url = url
+                tempthis.image_uploaded = true ;
                 console.log(url)
-                console.log(tempthis.main_image)
+                console.log( tempthis.image_url)
                 alert("image sucessfully added")
               })
             }
@@ -132,6 +135,7 @@ export default{
     },
    
        register(e){
+          
           
            const age = Number(this.form.age)
 
@@ -169,20 +173,29 @@ export default{
                    case (this.form.money === ""): 
                 alert(this.form.name + " Please select money/month section")
                  return false; 
+
+                 case(!this.image_uploaded):
+                alert(this.form.name + " image is uploading / please select the image")
+                 return false;
            }
+            this.form.timestamp = Date.now()
+           console.log(this.form.timestamp)
        
            let tempthis = this;
             e.preventDefault();
             
            db.collection("members").add({
-               name : tempthis.form.name,
+              
                age  : age,
+                name : tempthis.form.name,
                gender : tempthis.form.gender,
                goal : tempthis.form.goal,
                money : tempthis.form.money,
                desc  : tempthis.form.desc,
-              
-               contact: Number(tempthis.form.contact)
+               image :  tempthis.image_url,
+               contact: Number(tempthis.form.contact),
+               timestamp: tempthis.form.timestamp
+               
                
            }).then(function(docRef) {
              console.log("Document written with ID: ", docRef.id);

@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Admin from "./views/Admin.vue"
 import Image from "./views/Image.vue"
+import Test from "./views/Test.vue"
 
 Vue.use(Router)
 
@@ -32,6 +33,10 @@ export default new Router({
       path: '/image',
       name: 'Image',
       component: Image
+    },{
+      path: '/test',
+      name: 'Test',
+      component: Test
     }
   ]
 })
